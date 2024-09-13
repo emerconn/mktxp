@@ -1,10 +1,27 @@
-FROM python:3-alpine
-LABEL org.opencontainers.image.source github.com/akpw/mktxp
-WORKDIR /mktxp
+FROM python:3-slim AS builder
+
+LABEL org.opencontainers.image.source=github.com/akpw/mktxp
+
+WORKDIR /app
+
 COPY . .
-RUN pip install ./ && apk add nano
+
+RUN pip install --no-cache-dir .
+
+# ---------------- #
+
+FROM gcr.io/distroless/python3-debian12
+
+WORKDIR /app
+
+COPY --from=builder /usr/local/bin/mktxp . 
+
+USER nonroot:nonroot
+
 EXPOSE 49090
-RUN addgroup -S mktxp && adduser -S mktxp -G mktxp
-USER mktxp
-ENTRYPOINT ["/usr/local/bin/mktxp"]
+
+ENTRYPOINT ["mktxp"]
+
 CMD ["export"]
+
+ 

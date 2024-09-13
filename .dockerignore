@@ -1,9 +1,4 @@
-.git
-.gitignore
-.dockerignore
-Dockerfile
-k8s
-build
-dist
-mktxp.egg-info
-tests
+*
+!mktxp
+!setup.py
+!README.md
